@@ -101,7 +101,7 @@ contract TifoTreasury is Ownable {
     mapping(address => uint256) public rewardManagerQueue; // Delays changes to mapping.
 
     address public sTIFO;
-    uint256 public sTIFOQueue; // Delays change to sTIFO address
+    // uint256 public sTIFOQueue; // Delays change to sTIFO address
 
     uint256 public totalReserves; // Risk-free value of all assets
     uint256 public totalDebt;
@@ -162,26 +162,6 @@ contract TifoTreasury is Ownable {
         emit Withdrawal(_token, _amount, value);
     }
 
-    function incurDebt(uint256 _amount, address _token) external {
-        require(isDebtor[msg.sender], "Not approved");
-        require(isReserveToken[_token], "Not accepted");
-
-        uint256 value = valueOfToken(_token, _amount);
-
-        uint256 maximumDebt = IERC20(sTIFO).balanceOf(msg.sender); // Can only borrow against sTIFO held
-        uint256 availableDebt = maximumDebt.sub(debtorBalance[msg.sender]);
-        require(value <= availableDebt, "Exceeds debt limit");
-
-        debtorBalance[msg.sender] = debtorBalance[msg.sender].add(value);
-        totalDebt = totalDebt.add(value);
-
-        totalReserves = totalReserves.sub(value);
-        emit ReservesUpdated(totalReserves);
-
-        IERC20(_token).transfer(msg.sender, _amount);
-
-        emit CreateDebt(msg.sender, _token, _amount, value);
-    }
 
     function repayDebtWithReserve(uint256 _amount, address _token) external {
         require(isDebtor[msg.sender], "Not approved");
@@ -338,7 +318,7 @@ contract TifoTreasury is Ownable {
             );
         } else if (_managing == MANAGING.STIFO) {
             // 9
-            sTIFOQueue = block.number.add(blocksNeededForQueue);
+            // sTIFOQueue = block.number.add(blocksNeededForQueue);
         } else return false;
 
         emit ChangeQueued(_managing, _address);
@@ -391,7 +371,7 @@ contract TifoTreasury is Ownable {
         } else if (_managing == MANAGING.RESERVEMANAGER) {
             // 3
             if (requirements(ReserveManagerQueue, isReserveManager, _address)) {
-                reserveManagers.push(_address);
+                // reserveManagers.push(_address);
                 ReserveManagerQueue[_address] = 0;
                 if (!listContains(reserveManagers, _address)) {
                     reserveManagers.push(_address);
@@ -408,7 +388,7 @@ contract TifoTreasury is Ownable {
                     _address
                 )
             ) {
-                liquidityDepositors.push(_address);
+                // liquidityDepositors.push(_address);
                 LiquidityDepositorQueue[_address] = 0;
                 if (!listContains(liquidityDepositors, _address)) {
                     liquidityDepositors.push(_address);
@@ -465,7 +445,7 @@ contract TifoTreasury is Ownable {
             isRewardManager[_address] = result;
         } else if (_managing == MANAGING.STIFO) {
             // 9
-            sTIFOQueue = 0;
+            // sTIFOQueue = 0;
             sTIFO = _address;
             result = true;
         } else return false;

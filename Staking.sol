@@ -54,7 +54,7 @@ contract TifoStaking is OwnableUpgradeable {
     uint256 public warmupPeriod;
 
     address public stakingRewardRelease;
-    bool public stakingRewardReleaseSwaitch;
+    bool public stakingRewardReleaseSwitch;
     mapping(address => uint256) public stakingAmountOf;
     address public loanContract;
     struct RewardInfo {
@@ -219,7 +219,7 @@ contract TifoStaking is OwnableUpgradeable {
 
     function _sendTIFOReward(address _receiptor, uint256 _rewardAmount) private {
         if (_rewardAmount == 0) return;
-        if (stakingRewardReleaseSwaitch) {
+        if (stakingRewardReleaseSwitch) {
             IStakingRewardRelease(stakingRewardRelease).addReward(
                 _receiptor,
                 _rewardAmount
@@ -283,7 +283,7 @@ contract TifoStaking is OwnableUpgradeable {
         if (_switch)
             require(address(0) != _contract, "not support zero address");
         stakingRewardRelease = _contract;
-        stakingRewardReleaseSwaitch = _switch;
+        stakingRewardReleaseSwitch = _switch;
     }
 
 
