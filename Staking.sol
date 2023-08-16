@@ -177,7 +177,7 @@ contract TifoStaking is OwnableUpgradeable {
         return ITIFOERC20(sTIFO).index();
     }
 
-    function rebase() public {
+    function rebase() private {
         if (epoch.endBlock <= block.number) {
             ITIFOERC20(sTIFO).rebase(realDistribute, epoch.number);
 
